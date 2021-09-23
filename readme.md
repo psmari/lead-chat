@@ -1,7 +1,9 @@
 # LEAD CHAT
 
-Este é um repositório criado para estudo da construção de um chatbot. O projeto tem como objetivo **filtrar** a captação de leads de um negócio de design.
+Este é um repositório criado para estudo da construção de um chatbot. O projeto tem como objetivo iniciar a captação de leads de um negócio de design.
 
+Fluxo base
+![alt text](https://drive.google.com/file/d/1uCjpIsnqxHoNIB9pU8CoZXpOR1Dz-LjV/view?usp=sharing)
 ## COMO EXECUTAR O PROJETO
 
 1. tenha instalado na máquina o **python**, **pip** e o **virtualenv**
