@@ -30,16 +30,15 @@ def bot():
         lastChat = verifyLastChat(lead.id)
        
         incoming_msg = incoming_msg.lower()
+       
         
-        if(lastChat and lastChat.date > datetime.now() - timedelta(days=1)):
-            if 'falar' in incoming_msg and 'especialista' in incoming_msg or '1' in incoming_msg:
-                response = 'Para falar com o especialista é só clicar aqui: <a href=https://wa.me/5512981497635>'
-                msg.body(response)
+        if(lastChat and lastChat.date > datetime.now() - timedelta(days=1) or lastChat.send.type != 'fim'):    
+            if 'falar' in incoming_msg and 'especialista' in incoming_msg:
+                response =  Messages.objects(Q(type="fim") & Q(number="1"))[0]
+                msg.body(response.text+"=Olá%20sou%20a%20"+lead.name+"%20Estava%20conversando%20com%20a%20Bastet")
                 responded = True
-                response2 = Messages.objects(Q(type="form") & Q(number="2"))[0]
-                msg2 = resp.message()
-                msg2.body(response2.text)        
-            if(lastChat.send.type == 'options' and lastChat.send.number == 1):
+                saveChat(response.id,incoming_msg,lead.id)        
+            elif(lastChat.send.type == 'options' and lastChat.send.number == 1):
                 if 'frase' in incoming_msg or '1' in incoming_msg:
                     # retorne uma citação 
                     r = requests.get('https://api.quotable.io/random')
@@ -57,12 +56,13 @@ def bot():
                 if not responded:
                     response = 'Eita, não consegui entender, desculpe!'
                     msg.body(response)
-            if(lastChat.send.type == 'options' and lastChat.send.number == 1):
+            elif(lastChat.send.type == 'options' and lastChat.send.number == 1):
                 incoming_msg = incoming_msg.lower()
                 if 'falar' in incoming_msg or 'especialista' in incoming_msg or '1' in incoming_msg:
-                    response = 'Para falar com o especialista é só clicar aqui: <a href=https://wa.me/552196312XXXX>'
-                    msg.body(response)
+                    response =  Messages.objects(Q(type="fim") & Q(number="1"))[0]
+                    msg.body(response.text+"=Olá%20sou%20a%20"+lead.name+"%20Estava%20conversando%20com%20a%20Bastet")
                     responded = True
+                    saveChat(response.id,incoming_msg,lead.id) 
                 if 'remarcar' in incoming_msg or 'reunião' in incoming_msg or '2' in incoming_msg:
                     response = Messages.objects(Q(type="meeting") & Q(number="1"))[0]
                     msg.body(response.text)
@@ -107,7 +107,47 @@ def bot():
                     else:
                         response = 'Eita, não consegui entender, desculpe!'
                     msg.body(response.text)        
-
+            elif(lastChat.send.type == 'logo'):
+                if(lastChat.send.number == '1'):
+                    incoming_msg = incoming_msg.lower()
+                    if 'sim' in incoming_msg or '1':
+                        response = Messages.objects(Q(type="logo") & Q(number="2"))[0]
+                        msg.body(response.text)     
+                        saveChat(response.id,incoming_msg,lead.id)
+                    elif 'não' in incoming_msg or '2':
+                        response = "Entendi, então vai ser um grande desafio para os nossos especialistas :)\nAdoramos isso ^^"
+                        msg.body(response.text)     
+                        saveChat(response.id,incoming_msg,lead.id)
+                        response2 = Messages.objects(Q(type="logo") & Q(number="3"))[0]
+                        msg2 = resp.message()
+                        msg2.body(response2.text)        
+                        saveChat(response2.id,incoming_msg,lead.id)
+                       
+                elif(lastChat.send.number == '2'):
+                    response = Messages.objects(Q(type="logo") & Q(number="3"))[0]
+                    msg.body(response.text)        
+                    saveChat(response.id,incoming_msg,lead.id)
+                    Lead.objects(id=lead.id).update_one(set__brand=incoming_msg)
+                elif(lastChat.send.number == '3'):
+                    response = Messages.objects(Q(type="logo") & Q(number="4"))[0]
+                    msg.body(response.text)        
+                    saveChat(response.id,incoming_msg,lead.id)
+                elif(lastChat.send.number == '4'):
+                    response = Messages.objects(Q(type="meeting") & Q(number="1"))[0]
+                    msg.body(response.text)        
+                    saveChat(response.id,incoming_msg,lead.id)
+                    response2 = "Deu certo?\n1-sim\n2.não"
+                    msg2 = resp.message()
+                    msg2.body(response2.text)        
+            elif(lastChat.send.type == 'meeting'):
+                if 'sim' in incoming_msg or '1':
+                    response = Messages.objects(Q(type="fim") & Q(number="2"))[0]
+                    msg.body(response.text)     
+                    saveChat(response.id,incoming_msg,lead.id)
+                elif 'não' in incoming_msg or '2':
+                    response = Messages.objects(Q(type="fim") & Q(number="3"))[0]
+                    msg.body(response.text)     
+                    saveChat(response.id,incoming_msg,lead.id)
         else:
             response = Messages.objects(Q(type="greetings") & Q(number="2"))[0]
             msg.body(response.text+lead.name)

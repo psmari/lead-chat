@@ -7,5 +7,5 @@ class Lead(Document):
     username_whats = StringField()
     phone = StringField()
     email = StringField()
-    marca = StringField()
-    site = StringField()
+    brand = StringField()
+    website = StringField()
