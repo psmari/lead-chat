@@ -3,7 +3,7 @@
 Este é um repositório criado para estudo da construção de um chatbot. O projeto tem como objetivo iniciar a captação de leads de um negócio de design.
 
 Fluxo base
-![alt text](https://drive.google.com/file/d/1uCjpIsnqxHoNIB9pU8CoZXpOR1Dz-LjV/view?usp=sharing)
+![alt text](https://github.com/Psilva009/lead-chat/blob/master/Definir%20a%20sequ%C3%AAncia%20de%20intera%C3%A7%C3%A3o%20com%20o%20chat.drawio.png)
 ## COMO EXECUTAR O PROJETO
 
 1. tenha instalado na máquina o **python**, **pip** e o **virtualenv**
