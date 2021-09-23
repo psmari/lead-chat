@@ -31,14 +31,15 @@ def bot():
        
         incoming_msg = incoming_msg.lower()
        
-        
-        if(lastChat and lastChat.date > datetime.now() - timedelta(days=1) or lastChat.send.type != 'fim'):    
+       
+        if(lastChat and lastChat.date > datetime.now() - timedelta(days=1) and lastChat.send.type != 'fim'):   
             if 'falar' in incoming_msg and 'especialista' in incoming_msg:
                 response =  Messages.objects(Q(type="fim") & Q(number="1"))[0]
                 msg.body(response.text+"=Olá%20sou%20a%20"+lead.name+"%20Estava%20conversando%20com%20a%20Bastet")
                 responded = True
-                saveChat(response.id,incoming_msg,lead.id)        
-            elif(lastChat.send.type == 'options' and lastChat.send.number == 1):
+                saveChat(response.id,incoming_msg,lead.id) 
+                 
+            elif(lastChat.send.type == 'options' and lastChat.send.number == "2"):
                 if 'frase' in incoming_msg or '1' in incoming_msg:
                     # retorne uma citação 
                     r = requests.get('https://api.quotable.io/random')
@@ -56,7 +57,7 @@ def bot():
                 if not responded:
                     response = 'Eita, não consegui entender, desculpe!'
                     msg.body(response)
-            elif(lastChat.send.type == 'options' and lastChat.send.number == 1):
+            elif(lastChat.send.type == 'options' and lastChat.send.number == "1"):
                 incoming_msg = incoming_msg.lower()
                 if 'falar' in incoming_msg or 'especialista' in incoming_msg or '1' in incoming_msg:
                     response =  Messages.objects(Q(type="fim") & Q(number="1"))[0]
@@ -64,7 +65,7 @@ def bot():
                     responded = True
                     saveChat(response.id,incoming_msg,lead.id) 
                 if 'remarcar' in incoming_msg or 'reunião' in incoming_msg or '2' in incoming_msg:
-                    response = Messages.objects(Q(type="meeting") & Q(number="1"))[0]
+                    response = Messages.objects(Q(type="meeting") & Q(number="2"))[0]
                     msg.body(response.text)
                     responded = True
                     saveChat(response.id,incoming_msg,lead.id) 
@@ -138,7 +139,7 @@ def bot():
                     saveChat(response.id,incoming_msg,lead.id)
                     response2 = "Deu certo?\n1-sim\n2.não"
                     msg2 = resp.message()
-                    msg2.body(response2.text)        
+                    msg2.body(response2)        
             elif(lastChat.send.type == 'meeting'):
                 if 'sim' in incoming_msg or '1':
                     response = Messages.objects(Q(type="fim") & Q(number="2"))[0]
