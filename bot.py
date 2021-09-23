@@ -29,11 +29,38 @@ def bot():
     if (lead):
         lastChat = verifyLastChat(lead.id)
        
+        incoming_msg = incoming_msg.lower()
+        
         if(lastChat and lastChat.date > datetime.now() - timedelta(days=1)):
-            if(lastChat.send.type == 'options'):
+            if 'falar' in incoming_msg and 'especialista' in incoming_msg or '1' in incoming_msg:
+                response = 'Para falar com o especialista é só clicar aqui: <a href=https://wa.me/5512981497635>'
+                msg.body(response)
+                responded = True
+                response2 = Messages.objects(Q(type="form") & Q(number="2"))[0]
+                msg2 = resp.message()
+                msg2.body(response2.text)        
+            if(lastChat.send.type == 'options' and lastChat.send.number == 1):
+                if 'frase' in incoming_msg or '1' in incoming_msg:
+                    # retorne uma citação 
+                    r = requests.get('https://api.quotable.io/random')
+                    if r.status_code == 200:
+                        data = r.json()
+                        response = f'{data["content"]} ({data["author"]})'
+                    else:
+                        response = 'Não consegui recuperar uma citação neste momento, desculpe.'
+                    msg.body(response)
+                    responded = True
+                if 'gato' in incoming_msg or 'gata' in incoming_msg or '2' in incoming_msg:
+                    # retorne uma foto de gato
+                    msg.media('https://cataas.com/cat')
+                    responded = True
+                if not responded:
+                    response = 'Eita, não consegui entender, desculpe!'
+                    msg.body(response)
+            if(lastChat.send.type == 'options' and lastChat.send.number == 1):
                 incoming_msg = incoming_msg.lower()
                 if 'falar' in incoming_msg or 'especialista' in incoming_msg or '1' in incoming_msg:
-                    response = 'Vou encaminhar'
+                    response = 'Para falar com o especialista é só clicar aqui: <a href=https://wa.me/552196312XXXX>'
                     msg.body(response)
                     responded = True
                 if 'remarcar' in incoming_msg or 'reunião' in incoming_msg or '2' in incoming_msg:
