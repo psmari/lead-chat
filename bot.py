@@ -32,9 +32,9 @@ def bot():
         incoming_msg = incoming_msg.lower()
        
        
-        if(lastChat and lastChat.date > datetime.now() - timedelta(days=1) and lastChat.send.type != 'fim'):   
+        if(lastChat and lastChat.date > datetime.now() - timedelta(days=1) and lastChat.send.type != 'over'):   
             if 'falar' in incoming_msg and 'especialista' in incoming_msg:
-                response =  Messages.objects(Q(type="fim") & Q(number="1"))[0]
+                response =  Messages.objects(Q(type="over") & Q(number="1"))[0]
                 msg.body(response.text+"=Olá%20sou%20a%20"+lead.name+"%20Estava%20conversando%20com%20a%20Bastet")
                 responded = True
                 saveChat(response.id,incoming_msg,lead.id) 
@@ -60,7 +60,7 @@ def bot():
             elif(lastChat.send.type == 'options' and lastChat.send.number == "1"):
                 incoming_msg = incoming_msg.lower()
                 if 'falar' in incoming_msg or 'especialista' in incoming_msg or '1' in incoming_msg:
-                    response =  Messages.objects(Q(type="fim") & Q(number="1"))[0]
+                    response =  Messages.objects(Q(type="over") & Q(number="1"))[0]
                     msg.body(response.text+"=Olá%20sou%20a%20"+lead.name+"%20Estava%20conversando%20com%20a%20Bastet")
                     responded = True
                     saveChat(response.id,incoming_msg,lead.id) 
@@ -134,19 +134,35 @@ def bot():
                     msg.body(response.text)        
                     saveChat(response.id,incoming_msg,lead.id)
                 elif(lastChat.send.number == '4'):
-                    response = Messages.objects(Q(type="meeting") & Q(number="1"))[0]
+                    checkMeeting(incoming_msg, msg,resp,lead)
+            elif(lastChat.send.type == 'site'):
+                if(lastChat.send.number == '1'):
+                    incoming_msg = incoming_msg.lower()
+                    if 'sim' in incoming_msg or '1':
+                        response = Messages.objects(Q(type="site") & Q(number="4"))[0]
+                        msg.body(response.text)     
+                        saveChat(response.id,incoming_msg,lead.id)
+                    elif 'não' in incoming_msg or '2':
+                        response = Messages.objects(Q(type="site") & Q(number="2"))[0]
+                        msg.body(response.text)     
+                        saveChat(response.id,incoming_msg,lead.id)
+             
+                elif(lastChat.send.number == '2'):
+                    response = Messages.objects(Q(type="site") & Q(number="3"))[0]
                     msg.body(response.text)        
                     saveChat(response.id,incoming_msg,lead.id)
-                    response2 = "Deu certo?\n1-sim\n2.não"
-                    msg2 = resp.message()
-                    msg2.body(response2)        
+                    
+                elif(lastChat.send.number == '3'):
+                    checkMeeting(incoming_msg, msg,resp,lead)
+                elif(lastChat.send.number == '4'):
+                    checkMeeting(incoming_msg, msg,resp,lead)
             elif(lastChat.send.type == 'meeting'):
                 if 'sim' in incoming_msg or '1':
-                    response = Messages.objects(Q(type="fim") & Q(number="2"))[0]
+                    response = Messages.objects(Q(type="over") & Q(number="2"))[0]
                     msg.body(response.text)     
                     saveChat(response.id,incoming_msg,lead.id)
                 elif 'não' in incoming_msg or '2':
-                    response = Messages.objects(Q(type="fim") & Q(number="3"))[0]
+                    response = Messages.objects(Q(type="over") & Q(number="3"))[0]
                     msg.body(response.text)     
                     saveChat(response.id,incoming_msg,lead.id)
         else:
@@ -198,6 +214,18 @@ def saveLead(phone,name):
     lead.name = name
     lead.save()
     return lead
+
+def checkMeeting(incoming_msg,msg,resp,lead):
+    response = "Insira essa identificação "+str(lead.id)+" no terceiro campo do 'preencha seus dados' do calendly\n\n\n"
+    msg.body(response)
+    response1 = Messages.objects(Q(type="meeting") & Q(number="1"))[0]
+    msg1 = resp.message()
+    msg1.body(response1.text)        
+    saveChat(response1.id,incoming_msg,lead.id)
+    response2 = Messages.objects(Q(type="meeting") & Q(number="3"))[0]
+    msg2 = resp.message()
+    msg2.body(response2.text)
+
 
 if __name__ == '__main__':
    app.run()
