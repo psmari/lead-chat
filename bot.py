@@ -111,11 +111,11 @@ def bot():
             elif(lastChat.send.type == 'logo'):
                 if(lastChat.send.number == '1'):
                     incoming_msg = incoming_msg.lower()
-                    if 'sim' in incoming_msg or '1':
+                    if 'sim' in incoming_msg or '1' in incoming_msg:
                         response = Messages.objects(Q(type="logo") & Q(number="2"))[0]
                         msg.body(response.text)     
                         saveChat(response.id,incoming_msg,lead.id)
-                    elif 'não' in incoming_msg or '2':
+                    elif 'não' in incoming_msg or '2' in incoming_msg:
                         response = "Entendi, então vai ser um grande desafio para os nossos especialistas :)\nAdoramos isso ^^"
                         msg.body(response.text)     
                         saveChat(response.id,incoming_msg,lead.id)
@@ -138,11 +138,11 @@ def bot():
             elif(lastChat.send.type == 'site'):
                 if(lastChat.send.number == '1'):
                     incoming_msg = incoming_msg.lower()
-                    if 'sim' in incoming_msg or '1':
+                    if 'sim' in incoming_msg or '1' in incoming_msg:
                         response = Messages.objects(Q(type="site") & Q(number="4"))[0]
                         msg.body(response.text)     
                         saveChat(response.id,incoming_msg,lead.id)
-                    elif 'não' in incoming_msg or '2':
+                    elif 'não' in incoming_msg or '2' in incoming_msg:
                         response = Messages.objects(Q(type="site") & Q(number="2"))[0]
                         msg.body(response.text)     
                         saveChat(response.id,incoming_msg,lead.id)
@@ -157,11 +157,11 @@ def bot():
                 elif(lastChat.send.number == '4'):
                     checkMeeting(incoming_msg, msg,resp,lead)
             elif(lastChat.send.type == 'meeting'):
-                if 'sim' in incoming_msg or '1':
+                if 'sim' in incoming_msg or '1' in incoming_msg:
                     response = Messages.objects(Q(type="over") & Q(number="2"))[0]
                     msg.body(response.text)     
                     saveChat(response.id,incoming_msg,lead.id)
-                elif 'não' in incoming_msg or '2':
+                elif 'não' in incoming_msg or '2' in incoming_msg:
                     response = Messages.objects(Q(type="over") & Q(number="3"))[0]
                     msg.body(response.text)     
                     saveChat(response.id,incoming_msg,lead.id)
